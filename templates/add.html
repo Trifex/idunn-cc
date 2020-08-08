@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Add Link
+{% endblock %}
+
+{% block main %}
+    <h2>Create New Link:</h2>
+    <form action="/add" method="post">
+        <div class="form-group">
+            <input autocomplete="off" autofocus class="form-control" name="url" placeholder="Link URL" type="text" required>
+        </div>
+        <div class="form-group">
+            <input autocomplete="off" autofocus class="form-control" name="code" placeholder="Custom Code" type="text" required>
+        </div>
+        <div class="form-group">
+            <button class="btn btn-outline-dark" type="submit">Create New Link</button>
+        </div>
+    </form>
+{% endblock %}

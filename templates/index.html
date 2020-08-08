@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block main %}
+    <h2>Your Links:</h2>
+    <form action="/removelink" method="post" onsubmit="return confirm('Are you sure you want to remove this link?');">
+        <table class="table table-striped">
+          <tbody>
+            <thead>
+                <tr>
+                    <th scope="col">&nbsp;</th>
+                    <th scope="col">Short URL</th>
+                    <th scope="col">Real URL</th>
+                    <th scope="col">Clicks</th>
+                    <th scope="col">Timestamp</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for link in links %}
+                    <tr>
+                        <td><input type="radio" name="link" value="{{ link["id"] }}" required></td>
+                        <td><a href="{{ base }}/{{ link["name"] }}" target="_blank">idunn.us/{{ link["name"] }}</a></td>
+                        <td><a href="{{ link["url"]|truncate(30) }}" target="_blank">{{ link["url"]|truncate(30) }}</a></td>
+                        <td>{{ link["clicks"] }}</td>
+                        <td>{{ link["timestamp"] }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a class="btn btn-outline-dark" href="/add">Shorten New Link</a>
+        {% if links|length > 0 %}
+            <button class="btn btn-outline-dark" type="submit">Remove Link</button>
+        {% endif %}
+    </form>
+{% endblock %}

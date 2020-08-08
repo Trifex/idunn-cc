@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Users
+{% endblock %}
+
+{% block main %}
+    <h2>Users:</h2>
+    <form action="/removeuser" method="post" onsubmit="return confirm('Are you sure you want to remove this user?');">
+        <table class="table table-striped">
+          <tbody>
+            {% for user in users %}
+                <tr class="d-flex">
+                    {% if user["id"] in getAdminIDs() or user["id"] == session["user_id"]%}
+                        <td><input type="radio" name="user" value="{{ user["username"] }}" disabled></td>
+                        <td>{{ user["username"] }} <b>[ADMINISTRATOR]</b></td>
+                    {% else %}
+                        <td><input type="radio" name="user" value="{{ user["username"] }}" required></td>
+                        <td>{{ user["username"] }}</td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <a class="btn btn-outline-dark" href="/register">Register New User</a>
+        <button class="btn btn-outline-dark" type="submit">Remove User</button>
+    </form>
+{% endblock %}
