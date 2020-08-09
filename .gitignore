@@ -1,0 +1,3 @@
+uwsgi.ini
+__pycache__
+main.db
