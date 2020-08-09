@@ -55,7 +55,10 @@
             </header>
         {% endif %}
 
-        <main class="container p-5">
+        <main class="container p-5
+        {% if request.endpoint == "login" %}
+            h-100
+        {% endif %}">
             {% block main %}{% endblock %}
         </main>
 
@@ -64,7 +67,6 @@
                 Site designed and maintained by Ian Dunn.
             </footer>
         {% endif %}
-
     </body>
 
 </html>
