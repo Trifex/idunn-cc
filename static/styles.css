@@ -55,3 +55,7 @@ body {
 #wrapper {
     height: 100%;
 }
+
+#info p{
+  margin-bottom: 0;
+}

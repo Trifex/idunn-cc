@@ -143,8 +143,7 @@ def login():
             return apology("must provide password", 403)
 
         # Query database for username
-        rows = db.execute("SELECT * FROM users WHERE username = :username",
-                          username=request.form.get("username"))
+        rows = db.execute("SELECT * FROM users WHERE username = :username", username=request.form.get("username"))
 
         # Ensure username exists and password is correct
         if len(rows) != 1 or not check_password_hash(rows[0]["hash"], request.form.get("password")):
@@ -251,14 +250,24 @@ def users():
 
 @app.route("/<string:short>")
 def short(short):
-    shorts = db.execute("SELECT name, url FROM links")
+    shorts = db.execute("SELECT name, url FROM links WHERE name=:short", short=short)
 
-    for url in shorts:
-        if short == url["name"]:
-            db.execute("UPDATE links SET clicks=clicks+1 WHERE name=:short", short=short)
-            return redirect(url["url"])
+    if not shorts:
+        return apology("Page not found", 404)
+    short = shorts[0]
 
-    return apology("Page not found", 404)
+    db.execute("UPDATE links SET clicks=clicks+1 WHERE name=:short", short=short["name"])
+    return redirect(short["url"])
+
+@app.route("/<string:short>/info")
+def info(short):
+    shorts = db.execute("SELECT name, clicks, timestamp, url, username FROM links INNER JOIN users ON links.user = users.id WHERE name=:short", short=short)
+    
+    if not shorts:
+        return apology("Page not found", 404)
+    short = shorts[0]
+    
+    return render_template("info.html", link=short)
 
 def errorhandler(e):
     """Handle error"""
@@ -272,4 +281,4 @@ for code in default_exceptions:
     app.errorhandler(code)(errorhandler)
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=80, debug=True)
+    app.run(host='0.0.0.0', port=80, debug=False)
