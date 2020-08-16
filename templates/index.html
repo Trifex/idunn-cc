@@ -23,7 +23,7 @@
                     <tr>
                         <td><input type="radio" name="link" value="{{ link["id"] }}" required></td>
                         <td><a href="{{ base }}/{{ link["name"] }}" target="_blank">idunn.cc/{{ link["name"] }}</a></td>
-                        <td><a href="{{ link["url"]|truncate(30) }}" target="_blank">{{ link["url"]|truncate(30) }}</a></td>
+                        <td><a href="{{ link["url"] }}" target="_blank">{{ link["url"]|truncate(30) }}</a></td>
                         <td>{{ link["clicks"] }}</td>
                         <td>{{ link["timestamp"] }}</td>
                     </tr>
