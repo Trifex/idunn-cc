@@ -36,7 +36,7 @@ Session(app)
 # Configure CS50 Library to use SQLite database
 db = SQL("sqlite:///main.db")
 
-BASE = "http://45.46.214.210"
+BASE = "http://idunn.cc"
 
 # Add admin IDs to global Jinja functions
 app.jinja_env.globals.update(getAdminIDs=getAdminIDs)
