@@ -6,7 +6,7 @@
 
 {% block main %}
     <h2>Your Links:</h2>
-    <form action="/removelink" method="post" onsubmit="return confirm('Are you sure you want to remove this link?');">
+    <form action="/edit" method="post">
         <table class="table table-striped">
           <tbody>
             <thead>
@@ -32,7 +32,8 @@
         </table>
         <a class="btn btn-outline-dark" href="/add">Shorten New Link</a>
         {% if links|length > 0 %}
-            <button class="btn btn-outline-dark" type="submit">Remove Link</button>
+            <button class="btn btn-outline-dark" type="submit" name="edit">Edit Link</button>
+            <button class="btn btn-outline-dark" type="submit" name="remove">Remove Link</button>
         {% endif %}
     </form>
 {% endblock %}

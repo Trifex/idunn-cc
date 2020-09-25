@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Edit Link
+{% endblock %}
+
+{% block main %}
+    <h2>Edit Link Information:</h2>
+    <form action="/edit" method="post">
+        <div class="form-group">
+          <select autocomplete="off" autofocus class="form-control" name="link">
+            
+            <option value="" 
+              {% if not default %}
+                selected 
+              {% endif %}
+            disabled>Select Link</option>
+            
+            {% for link in links %}
+              <option value="{{ link["id"] }}"
+                {% if link["id"] | int == default | int %}
+                  selected
+                {% endif %}
+              >{{ link["name"] }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+            <input autocomplete="off" autofocus class="form-control" name="url" placeholder="Link URL" type="text">
+        </div>
+        <div class="form-group">
+            <input autocomplete="off" autofocus class="form-control" name="code" placeholder="Custom Code" type="text">
+        </div>
+        <div class="form-group">
+            <button class="btn btn-outline-dark" type="submit" name="update">Update Link</button>
+        </div>
+    </form>
+{% endblock %}

@@ -124,6 +124,76 @@ def index():
 
     return render_template("index.html", base=BASE, links=links)
 
+@app.route("/edit", methods=["GET", "POST"])
+@login_required
+def removelink():
+    """ Edit/Delete link """
+    if request.method == "POST":
+        if request.form.get("edit") != None:
+            link = request.form.get("link")
+            return redirect(f"/edit?link={link}")
+        elif request.form.get("remove") != None:
+            link = request.form.get("link")
+            short = db.execute("SELECT id FROM links WHERE id=:link AND user=:user", link=link, user=session["user_id"])
+
+            if not short:
+                return apology("No link with existing ID")
+            short = short[0]["id"]
+
+            db.execute("DELETE FROM links WHERE id=:linkid", linkid=short)
+        elif request.form.get("update") != None:
+            link = request.form.get("link")
+            short = db.execute("SELECT id, name, url FROM links WHERE id=:link AND user=:user", link=link, user=session["user_id"])
+
+            if not short:
+                return apology("No link with existing ID")
+            short = short[0]
+
+            print(short)
+
+            url = request.form.get("url")
+            code = request.form.get("code")
+
+            newName = code if code != "" else short["name"]
+            newURL = url if url != "" else short["url"]
+
+            if code != "":
+                if code == short["name"]:
+                    return apology("Custom code must be different")
+
+                if len(code) > 10:
+                    return apology("Custom code cannot be longer than 10 characters")
+
+                if not bool(re.match("^[A-Za-z0-9_]*$", code)):
+                    return apology("Custom code may only contain letters, numbers, and underscores")
+
+                codes = [code["name"] for code in db.execute("SELECT name FROM links")]
+                if code in codes:
+                    return apology("Custom code already exists")
+            
+            if url != "":
+                if url == short["url"]:
+                    return apology("URL must be different")
+
+                if not bool(re.match("(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})", url)):
+                    return apology("Invalid link")
+
+                urls = [url["url"] for url in db.execute("SELECT url FROM links WHERE user=:uid", uid=session["user_id"])]
+
+                if url in urls:
+                    return apology("URL already exists")
+
+                if BASE in url:
+                    return apology("Cannot create already shortened link")
+
+            db.execute("UPDATE links SET name=:name, url=:url WHERE id=:id", name=newName, url=newURL, id=short["id"])
+
+        return redirect("/")
+    else:
+        links = db.execute("SELECT id, name FROM links WHERE user=:user", user=session["user_id"])
+
+        return render_template("edit.html", links=links, default=request.args.get("link"))
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     """Log user in"""
@@ -206,21 +276,6 @@ def register():
     # User reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("register.html")
-
-@app.route("/removelink", methods=["POST"])
-@login_required
-def removelink():
-    """ Delete link """
-    link = request.form.get("link")
-    short = db.execute("SELECT id FROM links WHERE id=:link AND user=:user", link=link, user=session["user_id"])
-
-    if not short:
-        return apology("No link with existing ID")
-
-    short = short[0]["id"]
-
-    db.execute("DELETE FROM links WHERE id=:linkid", linkid=short)
-    return redirect("/")
 
 @app.route("/removeuser", methods=["POST"])
 @admin_required
