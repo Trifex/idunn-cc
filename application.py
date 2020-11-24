@@ -303,7 +303,7 @@ def users():
     users = db.execute("SELECT id, username from USERS")
     return render_template("users.html", users=users, adminIDs=getAdminIDs())
 
-@app.route("/<string:short>")
+@app.route("/<string:short>", strict_slashes=False)
 def short(short):
     shorts = db.execute("SELECT name, url FROM links WHERE name=:short", short=short)
 
