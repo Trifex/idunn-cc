@@ -60,7 +60,7 @@ def add():
         if url in urls:
             return apology("URL already exists")
 
-        if BASE in url:
+        if "idunn.cc" in url:
             return apology("Cannot create already shortened link")
 
         if len(code) > 10:
@@ -183,7 +183,7 @@ def removelink():
                 if url in urls:
                     return apology("URL already exists")
 
-                if BASE in url:
+                if "idunn.cc" in url:
                     return apology("Cannot create already shortened link")
 
             db.execute("UPDATE links SET name=:name, url=:url WHERE id=:id", name=newName, url=newURL, id=short["id"])
